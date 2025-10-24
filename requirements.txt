@@ -1,0 +1,7 @@
+librosa
+pyaml
+tensorboard
+torchaudio
+pesq
+pystoi
+torch-pesq
