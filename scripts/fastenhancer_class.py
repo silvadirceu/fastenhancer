@@ -41,7 +41,7 @@ class FastEnhancer:
 
 
 def main():
-    audio_path = "/home/carlos/workspace/yamnet/results/1933221_20250319191651/010_orig.wav"
+    audio_path = "/home/carlos/workspace/fastenhancer/dataset/010_orig.wav"
     model_dir = "/home/carlos/workspace/fastenhancer/logs/fastenhancer_l/"
     output_dir = "results/"
     os.makedirs(output_dir, exist_ok=True)
