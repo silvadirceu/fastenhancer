@@ -9,40 +9,11 @@ from tqdm import tqdm
 
 from utils import get_hparams, HParams
 from wrappers import get_wrapper
-
-
-class FastEnhancer:
-
-    model_dir:str
-    device:str
-
-    def __init__(self, model_dir, device="cpu"):
-        self.model_dir = model_dir
-        #device = torch.device("cuda")
-        self.device = torch.device(device.lower())
-        self.hps = self.get_params(self.model_dir)
-        self.model = self.load_model(self.hps, self.device)
-
-    def get_params(self, model_dir:str) -> HParams:
-        hps = get_hparams(base_dir=model_dir)
-        return hps
-
-    def load_model(self, hps:HParams, device):
-        wrapper = get_wrapper(hps.wrapper)(hps, device=device)
-        wrapper.load()
-        return wrapper
-    
-    def predict(self, x:torch.Tensor):
-        with torch.no_grad():
-            enhanced, spec = self.model.model(x)  # return: wav, spec
-        return enhanced
-        
-    
-
+from fastenhancer_class import FastEnhancer
 
 def main():
-    audio_path = "/home/carlos/workspace/fastenhancer/dataset/010_orig.wav"
-    model_dir = "/home/carlos/workspace/fastenhancer/logs/fastenhancer_l/"
+    audio_path = "/home/carlosd/workspace/fastenhancer/dataset/010_orig.wav"
+    model_dir = "/home/carlosd/workspace/fastenhancer/logs/fastenhancer_l/"
     output_dir = "results/"
     os.makedirs(output_dir, exist_ok=True)
 
