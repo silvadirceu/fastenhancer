@@ -8,11 +8,11 @@ import io
 import base64
 from utils import get_hparams, HParams
 from wrappers import get_wrapper
-from fastenhancer_class import FastEnhancer
+from fastenhancer_class import TorchFastEnhancer
 
 app = FastAPI()
 model_dir = "logs/fastenhancer_l"
-enhancer = FastEnhancer(model_dir=model_dir, device="cpu")
+enhancer = TorchFastEnhancer(model_dir=model_dir, device="cpu")
 
 @app.post("/predict")
 async def predict_audio(file: UploadFile = File(...)):

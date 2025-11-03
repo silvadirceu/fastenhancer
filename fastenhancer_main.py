@@ -6,22 +6,29 @@ import torch
 import librosa
 import soundfile as sf
 from tqdm import tqdm
+import numpy as np
 
 from utils import get_hparams, HParams
 from wrappers import get_wrapper
-from fastenhancer_class import FastEnhancer
+from fastenhancer_class import TorchFastEnhancer, OpenVINOEnhancer, ONNXRunTimeEnhancer
 
 def main():
     audio_path = "/home/carlosd/workspace/fastenhancer/dataset/010_orig.wav"
-    model_dir = "/home/carlosd/workspace/fastenhancer/logs/fastenhancer_l/"
+    model_path = "/home/carlosd/workspace/fastenhancer/logs/fastenhancer_l/"  # torch pth model
+    #model_path = "/home/carlosd/workspace/fastenhancer/onnx/fastenhancer.default.spec.onnx"
+    #model_path = "/home/carlosd/workspace/fastenhancer/onnx_models/fastenhancer_l.onnx"
     output_dir = "results/"
     os.makedirs(output_dir, exist_ok=True)
 
-    fastEn = FastEnhancer(model_dir=model_dir, device="cpu")
-
+    fastEn = TorchFastEnhancer(model_dir=model_path, device="cpu")
+    #fastEn = OpenVINOEnhancer(model_path=model_path, device="CPU")
+    #fastEn = ONNXRunTimeEnhancer(model_path=model_path)
+    
     # Load a noisy audio
     audio, fs = librosa.load(audio_path, sr=16000, mono=True)
-    audio = torch.from_numpy(audio).float().to(fastEn.device).unsqueeze(0)
+    audio = torch.from_numpy(audio).float().to("cpu").unsqueeze(0)
+    #audio = np.expand_dims(audio.astype(np.float32), axis=0)
+
 
     # Inference
     enhanced = fastEn.predict(x=audio)

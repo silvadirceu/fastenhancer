@@ -13,6 +13,9 @@ import librosa
 from tqdm import tqdm
 import scipy.io.wavfile
 
+import sys
+sys.path.append("/home/carlosd/workspace/fastenhancer/")
+
 from utils import get_hparams
 from wrappers import get_wrapper
 

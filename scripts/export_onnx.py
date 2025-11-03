@@ -15,6 +15,9 @@ import librosa
 from tqdm import tqdm
 import scipy.io.wavfile
 
+import sys
+sys.path.append("/home/carlosd/workspace/fastenhancer/")
+
 from utils import get_hparams
 from wrappers import get_wrapper
 
@@ -200,6 +203,8 @@ def main(args):
         wav_out = np.clip(wav_out, a_min=-1.0, a_max=1.0)
         scipy.io.wavfile.write("onnx/delete_it_onnx.wav", 16_000, wav_out)
         print("✅")
+
+
 
 
 if __name__ == "__main__":

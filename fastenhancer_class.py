@@ -10,7 +10,45 @@ from tqdm import tqdm
 from utils import get_hparams, HParams
 from wrappers import get_wrapper
 
-class FastEnhancer:
+
+import onnxruntime as ort
+import numpy as np
+
+class ONNXRunTimeEnhancer:
+    def __init__(self, model_path: str):
+        self.session = ort.InferenceSession(model_path)
+        self.input_name = self.session.get_inputs()[0].name
+        self.output_name = self.session.get_outputs()[0].name
+
+    def predict(self, x: np.ndarray) -> np.ndarray:
+        if x.ndim == 1:
+            x = np.expand_dims(x, axis=0)
+        x = x.astype(np.float32)
+        result = self.session.run([self.output_name], {self.input_name: x})[0]
+        return result.squeeze()
+
+
+from openvino import Core
+import numpy as np
+
+class OpenVINOEnhancer:
+    def __init__(self, model_path: str, device: str = "CPU"):
+        core = Core()
+        self.model = core.read_model(model_path)
+        self.compiled_model = core.compile_model(self.model, device)
+        self.input_layer = self.model.inputs[0]
+        self.output_layer = self.model.outputs[0]
+        self.device = device
+
+    def predict(self, x: np.ndarray) -> np.ndarray:
+        if x.ndim == 1:
+            x = np.expand_dims(x, axis=0)
+        result = self.compiled_model([x])[self.output_layer]
+        return result.squeeze()
+
+
+
+class TorchFastEnhancer:
 
     model_dir:str
     device:str
@@ -24,6 +62,7 @@ class FastEnhancer:
 
     def get_params(self, model_dir:str) -> HParams:
         hps = get_hparams(base_dir=model_dir)
+        print(f"HPS.wrapper: {hps.wrapper}")
         return hps
 
     def load_model(self, hps:HParams, device):
