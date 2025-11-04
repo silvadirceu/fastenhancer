@@ -7,3 +7,4 @@ docs/site/
 *.onnx
 enhanced/
 results/
+fastenhancer_mar/

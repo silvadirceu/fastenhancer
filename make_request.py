@@ -1,16 +1,38 @@
 import requests
 import base64
-import os
+import json
 
-with open("dataset/010_orig.wav", "rb") as f:
-    response = requests.post("http://localhost:8000/predict", files={"file": f})
+# Token de inferência
+token = "9bprJuV2"
 
-data = response.json()
+# Caminho do áudio
+audio_path = "dataset/010_orig.wav"
 
-# Salva os arquivos OGG localmente
-os.makedirs("results/", exist_ok=False)
-with open("enhanced.ogg", "wb") as f:
-    f.write(base64.b64decode(data["results/enhanced_ogg_base64"]))
+# Endpoint de predição
+url = "http://127.0.0.1:8080/predictions/meu_modelo"
 
-with open("residue.ogg", "wb") as f:
-    f.write(base64.b64decode(data["results/residue_ogg_base64"]))
+# Cabeçalhos
+headers = {
+    "Authorization": f"Bearer {token}",
+    "Content-Type": "audio/wav"
+}
+
+# Envia o áudio como corpo da requisição
+with open(audio_path, "rb") as f:
+    response = requests.post(url, headers=headers, data=f)
+
+# Verifica a resposta
+print("Status:", response.status_code)
+try:
+    data = response.json()
+    print("Resposta:", json.dumps(data, indent=2))
+
+    # Salva os arquivos OGG decodificados
+    with open("results/enhanced.ogg", "wb") as f:
+        f.write(base64.b64decode(data["enhanced_ogg_base64"]))
+
+    with open("results/residue.ogg", "wb") as f:
+        f.write(base64.b64decode(data["residue_ogg_base64"]))
+
+except Exception as e:
+    print("Erro ao processar resposta:", e)
