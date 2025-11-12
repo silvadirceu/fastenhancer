@@ -425,7 +425,8 @@ class ONNXModel(nn.Module):
         self,
         spec_noisy: Tensor,
         *args
-    ) -> tp.Tuple[Tensor, Tensor, ...]:
+    ) -> tp.Tuple[Tensor, ...]:
+
         """ input/output: [B, n_fft//2+1, T_spec, 2]"""
         # Compress
         mag = torch.linalg.norm(
@@ -445,7 +446,7 @@ class ONNXModel(nn.Module):
             keepdim=True
         )
         spec_hat = spec_hat * mag_compressed.pow(1.0 / self.input_compression - 1.0)
-        return spec_hat, *cache_out_list
+        return (spec_hat, *cache_out_list)
 
     def load_state_dict(self, state_dict, strict: bool = True) -> None:
         if not self.onnx:

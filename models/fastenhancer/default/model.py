@@ -643,7 +643,7 @@ class ONNXModel(nn.Module):
         self,
         spec_noisy: Tensor,
         *args
-    ) -> tp.Tuple[Tensor, Tensor, ...]:
+    ) -> tp.Tuple[Tensor, ...]:
         """ input/output: [B, n_fft//2+1, T_spec, 2]"""
         # Compress
         spec_noisy = spec_noisy[:, :-1, :, :]   # [B, n_fft//2, T_spec, 2]
@@ -672,7 +672,7 @@ class ONNXModel(nn.Module):
         )
         spec_hat = spec_hat * mag_compressed.pow(1.0 / self.input_compression - 1.0)
         spec_hat = F.pad(spec_hat, (0, 0, 0, 0, 0, 1))    # [B, F+1, T, 2]
-        return spec_hat, *cache_out_list
+        return (spec_hat, *cache_out_list)
 
 
 class Model(ONNXModel):

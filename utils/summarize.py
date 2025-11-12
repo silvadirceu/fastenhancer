@@ -1,7 +1,7 @@
 from typing import Union, Dict, Any
 import torch
 import numpy as np
-from torch.utils.tensorboard import SummaryWriter
+#from torch.utils.tensorboard import SummaryWriter
 
 MATPLOTLIB_FLAG = False
 
@@ -87,58 +87,58 @@ def plot_numpy(nparray: np.array, scale: str = "linear"):
     return data
 
 
-def summarize(
-    writer: SummaryWriter,
-    epoch: int,
-    scalars: Dict[str, Any] = {},
-    specs: Dict[str, np.array] = {},
-    images: Dict[str, np.array] = {},
-    audios: Dict[str, np.array] = {},
-    hists: Dict[str, np.array] = {},
-    scalars_not_to_print: Dict[str, Any] = {},
-    sampling_rate: int = 16000,
-    end: str = '\n',
-    print_: bool = True
-):
-    for key, value in scalars.items():
-        writer.add_scalar(key, value, epoch)
-        if print_:
-            if type(value)==float:
-                if abs(value) > 0.01 or value == 0.0:
-                    print(f"   {key}: {value:.4f}", end="")
-                else:
-                    print(f"   {key}: {value:.2e}", end="")
-            else:
-                print(f"   {key}: {value}", end="")
-    if scalars and print_:
-        print("", end=end)
+# def summarize(
+#     writer: SummaryWriter,
+#     epoch: int,
+#     scalars: Dict[str, Any] = {},
+#     specs: Dict[str, np.array] = {},
+#     images: Dict[str, np.array] = {},
+#     audios: Dict[str, np.array] = {},
+#     hists: Dict[str, np.array] = {},
+#     scalars_not_to_print: Dict[str, Any] = {},
+#     sampling_rate: int = 16000,
+#     end: str = '\n',
+#     print_: bool = True
+# ):
+#     for key, value in scalars.items():
+#         writer.add_scalar(key, value, epoch)
+#         if print_:
+#             if type(value)==float:
+#                 if abs(value) > 0.01 or value == 0.0:
+#                     print(f"   {key}: {value:.4f}", end="")
+#                 else:
+#                     print(f"   {key}: {value:.2e}", end="")
+#             else:
+#                 print(f"   {key}: {value}", end="")
+#     if scalars and print_:
+#         print("", end=end)
     
-    for key, value in scalars_not_to_print.items():
-        writer.add_scalar(key, value, epoch)
-    for key, value in specs.items():
-        img = plot_spectrogram_to_numpy(value)
-        writer.add_image(key, img, epoch, dataformats='HWC')
-    for k, v in hists.items():
-        writer.add_histogram(k, v, epoch)
-    for key, value in images.items():
-        writer.add_image(key, value, epoch, dataformats='HWC')
-    for k, v in audios.items():
-        writer.add_audio(k, v, epoch, sampling_rate)
+#     for key, value in scalars_not_to_print.items():
+#         writer.add_scalar(key, value, epoch)
+#     for key, value in specs.items():
+#         img = plot_spectrogram_to_numpy(value)
+#         writer.add_image(key, img, epoch, dataformats='HWC')
+#     for k, v in hists.items():
+#         writer.add_histogram(k, v, epoch)
+#     for key, value in images.items():
+#         writer.add_image(key, value, epoch, dataformats='HWC')
+#     for k, v in audios.items():
+#         writer.add_audio(k, v, epoch, sampling_rate)
 
 
-if __name__=="__main__":
-    """Tensorboard Example.
-    After running this code, run the following command in the terminal:
-    $tensorboard --logdir=logs/test
-    """
-    writer = SummaryWriter(log_dir="logs/test")    # ./logs/test 디렉토리에 로그 생성
+# if __name__=="__main__":
+#     """Tensorboard Example.
+#     After running this code, run the following command in the terminal:
+#     $tensorboard --logdir=logs/test
+#     """
+#     writer = SummaryWriter(log_dir="logs/test")    # ./logs/test 디렉토리에 로그 생성
 
-    for epoch in range(100):
-        # 매 epoch마다 loss, audio, mel 얻는다고 가정
-        audio = torch.rand(48000)     # 48000 길이의 audio
-        mel = torch.randn(15, 20)     # 15 x 20 크기의 mel spectrogram
+#     for epoch in range(100):
+#         # 매 epoch마다 loss, audio, mel 얻는다고 가정
+#         audio = torch.rand(48000)     # 48000 길이의 audio
+#         mel = torch.randn(15, 20)     # 15 x 20 크기의 mel spectrogram
 
-        scalars = {"loss/mel": 0.01, "loss/G": 1.2, "loss/D": 0.3}
-        spec = {"mel": mel.squeeze().cpu().numpy()}
-        audio = {"audio": audio.squeeze().cpu().numpy()}
-        summarize(writer, epoch, scalars=scalars, specs=spec, audios=audio)
+#         scalars = {"loss/mel": 0.01, "loss/G": 1.2, "loss/D": 0.3}
+#         spec = {"mel": mel.squeeze().cpu().numpy()}
+#         audio = {"audio": audio.squeeze().cpu().numpy()}
+#         summarize(writer, epoch, scalars=scalars, specs=spec, audios=audio)

@@ -19,7 +19,8 @@ from tqdm import tqdm
 
 from functional import stft, spec_to_mel
 from optim import get_optimizer, get_scheduler
-from utils import clip_grad_norm_local, plot_param_and_grad
+from utils.grad_clip import clip_grad_norm_local
+from utils.summarize import plot_param_and_grad
 from utils.data import get_dataset_dataloader
 from utils.terminal import clear_current_line
 from utils.measure_metrics import Metrics
